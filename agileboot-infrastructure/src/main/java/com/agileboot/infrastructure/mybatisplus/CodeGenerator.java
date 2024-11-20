@@ -49,9 +49,9 @@ public class CodeGenerator {
         // 默认读取application-dev yml中的master数据库配置
 //        JSON ymlJson = JSONUtil.parse(new Yaml().load(ResourceUtil.getStream("application-dev.yml")));
 
-        String databaseUrl = "jdbc:mysql://localhost:33067/agileboot-pure";
+        String databaseUrl = "jdbc:mysql://localhost:3306/lead_create";
         String username = "root";
-        String password = "12345";
+        String password = "123456";
 
         CodeGenerator generator = CodeGenerator.builder()
             .databaseUrl(databaseUrl)
