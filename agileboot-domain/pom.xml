@@ -22,6 +22,10 @@
             <groupId>com.agileboot</groupId>
             <artifactId>agileboot-infrastructure</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

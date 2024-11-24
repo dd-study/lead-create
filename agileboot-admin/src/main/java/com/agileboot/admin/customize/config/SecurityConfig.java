@@ -1,17 +1,17 @@
 package com.agileboot.admin.customize.config;
 
 import cn.hutool.json.JSONUtil;
+import com.agileboot.admin.customize.async.AsyncTaskFactory;
 import com.agileboot.admin.customize.service.login.LoginService;
+import com.agileboot.admin.customize.service.login.TokenService;
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.enums.common.LoginStatusEnum;
 import com.agileboot.common.exception.ApiException;
 import com.agileboot.common.exception.error.ErrorCode.Client;
 import com.agileboot.common.utils.ServletHolderUtil;
 import com.agileboot.domain.common.cache.RedisCacheService;
-import com.agileboot.admin.customize.async.AsyncTaskFactory;
 import com.agileboot.infrastructure.thread.ThreadPoolManager;
 import com.agileboot.infrastructure.user.web.SystemLoginUser;
-import com.agileboot.admin.customize.service.login.TokenService;
-import com.agileboot.common.enums.common.LoginStatusEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -124,26 +124,27 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-            // CSRF禁用，因为不使用session
-            .csrf().disable()
-            // 认证失败处理类
-            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler()).and()
-            // 基于token，所以不需要session
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            // 过滤请求
-            .authorizeRequests()
-            // 对于登录login 注册register 验证码captchaImage 以及公共Api的请求允许匿名访问
-            // 注意： 当携带token请求以下这几个接口时 会返回403的错误
-            .antMatchers("/login", "/register", "/getConfig", "/captchaImage", "/api/**").anonymous()
-            .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js",
-                "/profile/**").permitAll()
-            // TODO this is danger.
-            .antMatchers("/swagger-ui.html").anonymous()
-            .antMatchers("/swagger-resources/**").anonymous()
-            .antMatchers("/webjars/**").anonymous()
-            .antMatchers("/*/api-docs","/*/api-docs/swagger-config").anonymous()
-            .antMatchers("/**/api-docs.yaml" ).anonymous()
-            .antMatchers("/druid/**").anonymous()
+                // CSRF禁用，因为不使用session
+                .csrf().disable()
+                // 认证失败处理类
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler()).and()
+                // 基于token，所以不需要session
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                // 过滤请求
+                .authorizeRequests()
+                // 对于登录login 注册register 验证码captchaImage 以及公共Api的请求允许匿名访问
+                // 注意： 当携带token请求以下这几个接口时 会返回403的错误
+                .antMatchers("/login", "/register", "/getConfig", "/captchaImage", "/api/**").anonymous()
+                .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js",
+                        "/profile/**").permitAll()
+                // TODO this is danger.
+                .antMatchers("/swagger-ui.html").anonymous()
+                .antMatchers("/swagger-resources/**").anonymous()
+                .antMatchers("/webjars/**").anonymous()
+                .antMatchers("/*/api-docs", "/*/api-docs/swagger-config").anonymous()
+                .antMatchers("/**/api-docs.yaml").anonymous()
+                .antMatchers("/druid/**").anonymous()
+                .antMatchers("/weixin/**").permitAll()
             // 除上面外的所有请求全部需要鉴权认证
             .anyRequest().authenticated()
             .and()

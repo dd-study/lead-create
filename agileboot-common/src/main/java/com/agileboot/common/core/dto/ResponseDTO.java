@@ -38,6 +38,10 @@ public class ResponseDTO<T> {
         return build(data, ErrorCode.FAILED.code(), ErrorCode.FAILED.message());
     }
 
+    public static <T> ResponseDTO<T> fail(String msg) {
+        return build(null, ErrorCode.FAILED.code(), msg);
+    }
+
     public static <T> ResponseDTO<T> fail(ApiException exception) {
         return build(null, exception.getErrorCode().code(), exception.getMessage());
     }
