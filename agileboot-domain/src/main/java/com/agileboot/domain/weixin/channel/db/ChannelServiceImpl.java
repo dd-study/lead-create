@@ -2,11 +2,13 @@ package com.agileboot.domain.weixin.channel.db;
 
 import cn.hutool.core.util.IdUtil;
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.common.utils.Misc;
 import com.agileboot.domain.weixin.channel.dto.ChannelDto;
 import com.agileboot.domain.weixin.channel.dto.ChannelEditDto;
 import com.agileboot.domain.weixin.channel.query.ChannelQuery;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class ChannelServiceImpl extends ServiceImpl<ChannelMapper, Channel> impl
 
 
     @Override
-    public ResponseDTO create(ChannelEditDto editDto) {
+    public ResponseDTO add(ChannelEditDto editDto) {
         QueryWrapper<Channel> wrapper = new QueryWrapper<>();
         wrapper.eq("name", editDto.getName());
         if (!this.list(wrapper).isEmpty()) {
@@ -51,18 +53,19 @@ public class ChannelServiceImpl extends ServiceImpl<ChannelMapper, Channel> impl
         wrapper.eq("name", editDto.getName());
         Channel existOne = this.getOne(wrapper, false);
         if (null != existOne && !existOne.getId().equals(editDto.getId())) {
-            return ResponseDTO.fail("改名称已存在");
+            return ResponseDTO.fail("该名称已存在");
         }
 
         channel.setName(editDto.getName());
         channel.setRemark(editDto.getRemark());
-        return this.save(channel) ? ResponseDTO.ok() : ResponseDTO.fail();
+        return this.updateById(channel) ? ResponseDTO.ok() : ResponseDTO.fail();
     }
 
     @Override
-    public List<ChannelDto> listChannel(ChannelQuery query) {
-        List<Channel> list = this.list(query.toQueryWrapper());
-        return list.stream().map(ChannelDto::new).collect(Collectors.toList());
+    public PageDTO<ChannelDto> listChannel(ChannelQuery query) {
+        Page<Channel> page = this.page(query.toPage(), query.toQueryWrapper());
+        List<ChannelDto> list = page.getRecords().stream().map(ChannelDto::new).collect(Collectors.toList());
+        return new PageDTO<>(list, page.getTotal());
     }
 
 

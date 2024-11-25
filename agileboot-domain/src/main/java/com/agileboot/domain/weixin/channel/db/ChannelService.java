@@ -1,12 +1,11 @@
 package com.agileboot.domain.weixin.channel.db;
 
 import com.agileboot.common.core.dto.ResponseDTO;
+import com.agileboot.common.core.page.PageDTO;
 import com.agileboot.domain.weixin.channel.dto.ChannelDto;
 import com.agileboot.domain.weixin.channel.dto.ChannelEditDto;
 import com.agileboot.domain.weixin.channel.query.ChannelQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.List;
 
 /**
  * 渠道 服务类
@@ -19,7 +18,7 @@ public interface ChannelService extends IService<Channel> {
      * @Param:
      * @return:
      */
-    ResponseDTO create(ChannelEditDto editDto);
+    ResponseDTO add(ChannelEditDto editDto);
 
     /**
      * 修改
@@ -29,5 +28,5 @@ public interface ChannelService extends IService<Channel> {
      */
     ResponseDTO edit(ChannelEditDto editDto);
 
-    List<ChannelDto> listChannel(ChannelQuery query);
+    PageDTO<ChannelDto> listChannel(ChannelQuery query);
 }
